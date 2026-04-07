@@ -39,8 +39,6 @@ public class AccountsServiceImpl implements AccountsService {
             throw new CustomerAlreadyExistsException("Customer with phone number " + customer.getPhone() + " already exists.");
         }
 
-        customer.setCretedAt(LocalDateTime.now());
-        customer.setCreatedBy("System");
         Customer savedCustomer = customerRepository.save(customer);
         accountsRepository.save(createAccount(savedCustomer));
     }
@@ -87,6 +85,17 @@ public class AccountsServiceImpl implements AccountsService {
         return isUpdated;
     }
 
+    @Override
+    public boolean deleteAccount(String phone) {
+        Customer customer = customerRepository.findByPhone(phone).orElseThrow(
+                () -> new ResourceNotFoundException("Customer","mobileNumber",phone)
+        );
+
+        accountsRepository.deleteByCustomerId(customer.getCustomerId());
+        customerRepository.deleteById(customer.getCustomerId());
+        return true;
+    }
+
 
     private Accounts createAccount(Customer customer){
 
@@ -97,8 +106,6 @@ public class AccountsServiceImpl implements AccountsService {
         newAccount.setAccountNumber(randomAccNum);
         newAccount.setAccountType(AccountsConstants.SAVINGS);
         newAccount.setBranchAddress(AccountsConstants.ADDRESS);
-        newAccount.setCretedAt(LocalDateTime.now());
-        newAccount.setCreatedBy("System");
 
         return newAccount;
     }

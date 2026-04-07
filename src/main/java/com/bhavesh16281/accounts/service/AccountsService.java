@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface AccountsService {
 
     void createAccount(CustomerDTO customerDTO);
-    CustomerDTO getCustomerByPhone(@RequestParam String phone);
+    CustomerDTO getCustomerByPhone(String phone);
     boolean updateAccount(CustomerDTO customerDTO);
+    boolean deleteAccount(String phone);
 }
